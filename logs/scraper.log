@@ -1,0 +1,31 @@
+2026-09-17 22:14:32,518 - INFO - ====== WebDriver manager ======
+2026-09-17 22:14:34,359 - INFO - Get LATEST chromedriver version for google-chrome
+2026-09-17 22:14:35,662 - INFO - There is no [win64] chromedriver "152.0.7977.82" for browser google-chrome "152.0.7977" in cache
+2026-09-17 22:14:36,394 - INFO - There is no [win64] chromedriver "152.0.7977.82" for browser google-chrome "152.0.7977" in cache
+2026-09-17 22:14:36,394 - INFO - Get LATEST chromedriver version for google-chrome
+2026-09-17 22:14:38,994 - INFO - WebDriver version 152.0.7977.82 selected
+2026-09-17 22:14:39,005 - INFO - Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.82/win64/chromedriver-win64.zip
+2026-09-17 22:14:39,006 - INFO - About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/152.0.7977.82/win64/chromedriver-win64.zip
+2026-09-17 22:14:40,210 - INFO - Driver downloading response is 200
+2026-09-17 22:14:49,699 - INFO - Driver has been saved in cache [C:\Users\nirjalastha\.wdm\drivers\chromedriver\win64\152.0.7977.82]
+2026-09-17 22:14:51,684 - INFO - Starting query: laptop
+2026-09-17 22:14:51,684 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=laptop&page=1
+2026-09-17 22:15:08,082 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=laptop&page=2
+2026-09-17 22:15:18,791 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=laptop&page=3
+2026-09-17 22:15:33,473 - INFO - Starting query: mobile phone
+2026-09-17 22:15:33,473 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=mobile+phone&page=1
+2026-09-17 22:15:42,605 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=mobile+phone&page=2
+2026-09-17 22:15:51,714 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=mobile+phone&page=3
+2026-09-17 22:16:05,874 - INFO - Starting query: headphones
+2026-09-17 22:16:05,874 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=headphones&page=1
+2026-09-17 22:16:14,678 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=headphones&page=2
+2026-09-17 22:16:23,318 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=headphones&page=3
+2026-09-17 22:16:37,237 - INFO - Starting query: smart watch
+2026-09-17 22:16:37,238 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=smart+watch&page=1
+2026-09-17 22:16:45,967 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=smart+watch&page=2
+2026-09-17 22:16:54,942 - INFO - Scraping: https://www.daraz.com.np/catalog/?q=smart+watch&page=3
+2026-09-17 22:17:11,374 - INFO - Saved 120 rows to data/raw\laptop.csv
+2026-09-17 22:17:11,381 - INFO - Saved 120 rows to data/raw\mobile_phone.csv
+2026-09-17 22:17:11,391 - INFO - Saved 120 rows to data/raw\headphones.csv
+2026-09-17 22:17:11,397 - INFO - Saved 120 rows to data/raw\smart_watch.csv
+2026-09-17 22:17:11,439 - INFO - Saved merged dataset (480 rows) to data/processed\all_products.csv
