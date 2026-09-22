@@ -1,60 +1,51 @@
 # Daraz Product Data Scraper
 
-A Selenium-based scraper for collecting product listings from Daraz Nepal search results.
+A Selenium-based scraper that collects product listings from [Daraz Nepal](https://www.daraz.com.np) search results and exports them as CSV datasets.
 
-## What It Does
+## Overview
 
-When you run the project, it:
+Running the scraper will:
 
-1. Opens Daraz Nepal in a Chrome browser controlled by Selenium.
-2. Searches for these terms:
-   - `laptop`
-   - `mobile phone`
-   - `headphones`
-   - `smart watch`
-3. Scrapes up to 3 result pages for each search term.
-4. Collects up to 40 product cards per page.
-5. Extracts the following fields from each product card:
-   - product name
-   - price
-   - rating
-   - product link
-   - image URL
-   - search query used
-   - result page number
-6. Saves each search query's results as a separate CSV file in `data/raw/`.
-7. Combines all scraped results into one dataset, removes duplicate products using the product link, and saves it as `data/processed/all_products.csv`.
-8. Writes detailed progress and warning messages to `logs/scraper.log` and also prints them in the terminal.
+1. Launch Chrome (headless by default) via Selenium.
+2. Search Daraz Nepal for each configured term — by default: `laptop`, `mobile phone`, `headphones`, `smart watch`.
+3. Walk up to 3 result pages per search term, scraping up to 40 product cards per page.
+4. Pull the following fields from each product card:
+   - `name`
+   - `price`
+   - `rating` (`"No rating"` if none is shown)
+   - `link`
+   - `image_url`
+   - `search_query`
+   - `page`
+5. Write one CSV per search term to `data/raw/`, then merge everything into a single deduplicated dataset at `data/processed/all_products.csv` (deduplicated by `link`).
+6. Log progress and warnings to `logs/scraper.log` and the console.
 
-The scraper uses a two-second delay between pages and a five-second delay between search terms. These delays are defined in `config.py`.
+A 2-second delay is applied between pages and a 5-second delay between search terms to avoid hammering the site; both are configurable.
 
-## Project Structure
+## Project Layout
 
 ```text
 .
-├── config.py                 # Search terms, limits, delays, and paths
-├── main.py                   # Application entry point and CSV output logic
-├── requirements.txt          # Python dependencies
+├── config.py                 # Search terms, limits, delays, paths
+├── main.py                   # Entry point: runs the scrape, writes CSVs
+├── requirements.txt
 ├── scraper/
-│   ├── driver.py             # Selenium Chrome WebDriver setup
-│   ├── parser.py             # Product-card field extraction
-│   └── scrape.py             # Search-page scraping workflow
+│   ├── driver.py              # Chrome WebDriver setup (headless, UA, options)
+│   ├── parser.py               # Extracts fields from a single product card
+│   └── scrape.py                # Paginates search results per query
 ├── data/
-│   ├── raw/                  # One CSV file per search query
-│   └── processed/            # Combined, de-duplicated dataset
-└── logs/                     # Scraper logs
+│   ├── raw/                    # One CSV per search query
+│   └── processed/              # Combined, deduplicated dataset
+└── logs/                      # scraper.log
 ```
 
 ## Requirements
 
-- Python 3.9 or newer
+- Python 3.9+
 - Google Chrome installed
-- Internet access
-- A working Chrome installation that `webdriver-manager` can use to download the matching ChromeDriver
+- Internet access (ChromeDriver is fetched automatically via `webdriver-manager` on first run)
 
-## Installation
-
-Create and activate a virtual environment, then install the dependencies:
+## Setup
 
 ```powershell
 python -m venv .venv
@@ -62,21 +53,19 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-On Windows, PowerShell may require an execution-policy change before activating the environment. You can also run the Python executable directly from `.venv` without activating it.
+(If PowerShell blocks activation, adjust the execution policy, or just call the interpreter in `.venv\Scripts\` directly without activating.)
 
-## Running the Scraper
-
-From the project root, run:
+## Usage
 
 ```powershell
 python main.py
 ```
 
-The program runs in headless Chrome mode by default, so no visible browser window is opened. The first run may take longer because `webdriver-manager` downloads the required ChromeDriver.
+Chrome runs headless by default (`HEADLESS = True` in `config.py`), so no window will appear. The first run takes a bit longer while ChromeDriver downloads.
 
-## Output Files
+## Output
 
-For the current configuration, the scraper creates or updates:
+Given the default configuration, you'll get:
 
 ```text
 data/raw/laptop.csv
@@ -87,34 +76,34 @@ data/processed/all_products.csv
 logs/scraper.log
 ```
 
-Each raw and processed CSV contains these columns:
+Every CSV shares the same columns:
 
 ```text
 name,price,rating,link,image_url,search_query,page
 ```
 
-A product's `name`, `price`, `rating`, `link`, or `image_url` can be empty when Daraz does not expose that element in the product card. If no rating is found, the parser stores `No rating`.
+Some fields (`name`, `price`, `link`, `image_url`) may come back empty when Daraz's markup doesn't expose that element for a given card.
 
 ## Configuration
 
-Edit `config.py` to change the scraper behavior:
+All tunable behavior lives in `config.py`:
 
 ```python
 SEARCH_QUERIES = ["laptop", "mobile phone", "headphones", "smart watch"]
 MAX_PAGES_PER_QUERY = 3
 MAX_PRODUCTS_PER_PAGE = 40
 HEADLESS = True
-REQUEST_DELAY = 2
-QUERY_DELAY = 5
+REQUEST_DELAY = 2   # seconds between pages
+QUERY_DELAY = 5     # seconds between search terms
 ```
 
-You can also change the output directories and log file through `RAW_DIR`, `PROCESSED_DIR`, and `LOG_FILE`.
+`RAW_DIR`, `PROCESSED_DIR`, and `LOG_FILE` control where output goes.
 
-## Important Notes
+## Notes & Caveats
 
-- The scraper depends on Daraz's current HTML structure and CSS selectors. If Daraz changes its page markup, product extraction may stop working or some fields may become empty.
-- The scraper stops a query when a page fails to load or no product cards are found.
-- Duplicate products are removed only in `all_products.csv`, using the `link` column. The raw query files retain the results collected for their individual searches.
-- The project currently has no automated test suite.
-- `beautifulsoup4` is listed as a dependency but is not currently used by the implementation.
-- Use the scraper responsibly and respect Daraz's terms of service, robots policy, and applicable laws.
+- Extraction relies on Daraz's current HTML/CSS selectors. If their markup changes, fields may come back empty or scraping may fail outright.
+- A query stops early if a page fails to load or returns no product cards.
+- Deduplication (by `link`) only happens in `all_products.csv` — the per-query raw files keep every result as scraped.
+- There's no automated test suite yet.
+- `beautifulsoup4` is in `requirements.txt` but unused by the current implementation.
+- Please scrape responsibly — respect Daraz's terms of service and robots policy, and don't hit the site harder than necessary.
